@@ -145,7 +145,7 @@
     z-index:1000;
     opacity:0;
     pointer-events:none;
-    transition:opacity 1s ease;
+    transition:opacity 0.7s ease;
   }
   .lightbox-overlay.show { opacity:1; pointer-events:auto; }
   .lb-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
@@ -254,23 +254,23 @@
   <div class="static-item static-bottom" style="width:28%;">
     <img src="8.jpg" alt="Photo 8">
     <div class="static-desc">
-      <h3>Photo 8</h3>
-      <p>Description below the image.</p>
+      <h3><br>Nissan Skyline, R32</h3>
+      <p><br>Brands Hatch, Kent<br><br><u>Canon R10</u><br>Focal length: 215mm<br>ISO: 100<br>Exposure: 1/50<br>Aperture: f/13</p>
     </div>
   </div>
   <div style="display:flex; flex-direction:column; width:48%; gap:2rem;">
     <div class="static-item static-side">
       <img src="7.jpg" alt="Photo 7">
       <div class="static-desc">
-        <h3>Photo 7</h3>
-        <p>Description on the side of the image.</p>
+        <h3>Infrared Long Exposure</h3>
+        <p>Windsor Great Park, Windsor<br><br><u>Canon R10</u><br>Focal length: 28mm<br>ISO: 400<br>Exposure: 30 Seconds<br>Aperture: f/2.8</p>
       </div>
     </div>
     <div class="static-item static-side">
       <img src="9.jpg" alt="Photo 9">
       <div class="static-desc">
-        <h3>Photo 9</h3>
-        <p>Description on the side of the image.</p>
+        <h3>Island inhabitant</h3>
+        <p>Kōjima Island, Japan<br><br><u>Canon R10</u><br>Focal length: 150mm<br>ISO: 400<br>Exposure: 1/640<br>Aperture: f/6.3</p>
       </div>
     </div>
   </div>
@@ -305,16 +305,16 @@
   const images=carousel.querySelectorAll("img");
   const infoBox=document.getElementById("infoBox");
   const infoData=[
-    {title:"Placeholder Title 1",description:"Placeholder description or camera settings for this image."},
-    {title:"Placeholder Title 2",description:"Placeholder description or camera settings for this image."},
-    {title:"Placeholder Title 3",description:"Placeholder description or camera settings for this image."},
-    {title:"Placeholder Title 4",description:"Placeholder description or camera settings for this image."},
+    {title:"Mazda RX-7",description:"Miyazaki City, Japan<br><br><u>Canon R10</u><br><br>Double Exposure:<br>Car:<br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/200<br>Aperture: f/6.3<br><br>Foliage:<br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/120<br>Aperture: f/6.3"},
+    {title:"Tintagel Castle",description:"Tintagel, Cornwall<br><br><u>Canon R10</u><br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/1250<br>Aperture: f/7.1"},
+    {title:"Heiwadai Park",description:"Miyazaki City, Japan<br><br><u>Canon R10</u><br>Focal length: 34mm<br>ISO: 100<br>Exposure: 1/200<br>Aperture: f/5.6"},
+    {title:"Takachiho Gorge",description:"Miyazaki Prefecture, Japan<br><br><u>Canon R10</u><br>Focal length: 28mm<br>ISO: 800<br>Exposure: 1/160<br>Aperture: f/5.6"},
   ];
   let currentIndex=0;
   function updateCarousel(){ 
     images.forEach((img,i)=>img.classList.toggle("active",i===currentIndex));
-    infoBox.querySelector("h3").textContent=infoData[currentIndex].title;
-    infoBox.querySelector("p").textContent=infoData[currentIndex].description;
+    infoBox.querySelector("h3").innerHTML=infoData[currentIndex].title;
+    infoBox.querySelector("p").innerHTML=infoData[currentIndex].description;
   }
   function moveCarousel(dir){ 
     currentIndex+=dir; 
@@ -337,10 +337,10 @@
 
   const topTitles=["Porsche Boxtser","Motherhood","Lotus Elise","Station Phoenix<br>Road"];
   const topDescriptions=[
-    "Brands Hatch Track Day:<br><br>Canon R10<br>Focal length: 180mm<br>ISO: 100<br>Exposure: 1/50<br>Aperture: f/25",
-    "Kōjima Island:<br><br>Canon R10<br>Focal length: 215mm<br>ISO: 800<br>Exposure: 1/4000<br>Aperture: f/6.3",
-    "Nichinan City:<br><br>Canon R10<br>Focal length: 45mm<br>ISO: 250<br>Exposure: 1/640<br>Aperture: f/6.3",
-    "Nichinan City:<br><br>Canon R10<br>Focal length: 45mm<br>ISO: 250<br>Exposure: 1/640<br>Aperture: f/6.3"
+    "Brands Hatch, Kent<br><br><u>Canon R10</u><br>Focal length: 180mm<br>ISO: 100<br>Exposure: 1/50<br>Aperture: f/25",
+    "Kōjima Island, Japan<br><br><u>Canon R10</u><br>Focal length: 215mm<br>ISO: 800<br>Exposure: 1/4000<br>Aperture: f/6.3",
+    "Nichinan City, Japan<br><br><u>Canon R10</u><br>Focal length: 45mm<br>ISO: 250<br>Exposure: 1/640<br>Aperture: f/6.3",
+    "Nichinan City, Japan<br><br><u>Canon R10</u><br>Focal length: 45mm<br>ISO: 250<br>Exposure: 1/640<br>Aperture: f/6.3"
   ];
   let lbIndex=0;
 
