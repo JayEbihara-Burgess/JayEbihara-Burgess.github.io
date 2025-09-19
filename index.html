@@ -18,25 +18,32 @@
   }
   h1,h2,h3 { margin: 0; }
 
+  /* ---------- Banner ---------- */
   header.site-banner {
-    width: 100%;
-    background: #1b1b1b;
+    width: 100vw;
+    height: 35vh;
+    background-image: url('hero.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 30%; /* adjust image position */
     color: #fff;
-    text-align: center;
-    padding: 4rem 1rem;
+    text-align: left;
+    padding: 6rem 4rem;
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
   }
   header.site-banner::before {
     content: "";
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg,#0a84ff,#5ac8fa);
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
     pointer-events: none;
   }
   header.site-banner .banner-content { position: relative; z-index: 1; }
   header.site-banner h1 { font-size:3rem; letter-spacing:1.5px; margin-bottom:0.75rem; color:#f5f5f5; }
   header.site-banner p { font-size:1.25rem; font-weight:300; color:#dcdcdc; opacity:0.9; margin:0; }
+
+  /* ---------- Divider ---------- */
+  .divider { width:80%; height:2px; background:#b0bec5; margin:2rem 0; }
 
   /* ---------- Top row ---------- */
   .top-row {
@@ -53,8 +60,6 @@
   }
   .top-row img { width:100%; height:auto; border-radius:8px; display:block; }
 
-  .divider { width:80%; height:2px; background:#b0bec5; margin:2rem 0; }
-
   /* ---------- Carousel + Info Box ---------- */
   .carousel-container { display:flex; align-items:center; justify-content:center; gap:1rem; width:90%; max-width:900px; position:relative; margin-bottom:3rem; flex-wrap:wrap; }
   .carousel-wrapper { position:relative; width:50%; height:500px; display:flex; align-items:center; justify-content:center; }
@@ -67,47 +72,14 @@
   .arrow:hover { background:#f0f0f0; transform:translateY(-50%) scale(1.08); }
   .arrow.left { left:-60px; } .arrow.right { right:-60px; }
 
-  /* ---------- Lightbox (crossfade like carousel) ---------- */
-  .lightbox-overlay {
-    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-    z-index:1000; opacity:0; pointer-events:none; transition:opacity 1s ease;
-  }
+  /* ---------- Lightbox ---------- */
+  .lightbox-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity 1s ease; }
   .lightbox-overlay.show { opacity:1; pointer-events:auto; }
   .lb-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
-  .lb-container {
-    position: relative;
-    width: 60%;
-    height: 70vh;
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-    justify-content: flex-end;
-  }
-  .lb-container img {
-    position:absolute;
-    max-width:65%;
-    max-height:70vh;
-    border-radius:8px;
-    object-fit:contain;
-    margin-right:5%;
-    box-shadow:0 4px 16px rgba(0,0,0,0.15);
-    opacity:0;
-    margin-right: 25%;
-    transition:opacity 1s ease, transform 0.9s ease;
-  }
+  .lb-container { position: relative; width: 60%; height: 70vh; background: white; padding: 1rem; border-radius: 8px; display: flex; flex-direction: row; align-items: center; gap: 1rem; justify-content: flex-end; }
+  .lb-container img { position:absolute; max-width:65%; max-height:70vh; border-radius:8px; object-fit:contain; margin-right:26%; box-shadow:0 4px 16px rgba(0,0,0,0.15); opacity:0; transition:opacity 1s ease, transform 0.9s ease; }
   .lb-container img.active { opacity:1; z-index:1; transform:scale(1.02); }
-  #topLbText {
-    margin-bottom: 10rem;
-    width:30%;
-    margin-right: -7%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
+  #topLbText { margin-bottom: 10rem; width:30%; margin-right: -6%; display:flex; flex-direction:column; justify-content:center; }
   #topLbText h3 { font-size:1.5rem; margin-bottom:0.5rem; }
   #topLbText p { font-size:1rem; line-height:1.5; color:#555; }
   .lb-close, .lb-nav { background:none; border:none; cursor:pointer; font-size:2rem; color:#000; position:absolute; }
@@ -115,40 +87,17 @@
   .lb-prev { left:10px; top:50%; transform:translateY(-50%); }
   .lb-next { right:10px; top:50%; transform:translateY(-50%); }
 
-  /* ---------- New Static Row (no hover, separate description) ---------- */
-  .static-row {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin: 2rem auto;
-    flex-wrap: wrap;
-    max-width: 1000px;
-  }
-  .static-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 250px;
-  }
-  .static-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    pointer-events: none;
-  }
-  .static-desc {
-    margin-top: 0.75rem;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    width: 100%;
-    text-align: center;
-  }
-  .static-desc h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
-  .static-desc p { font-size: 0.9rem; margin: 0; color: #555; }
+  /* ---------- Full-width Static Row ---------- */
+  .static-row { display: flex; flex-wrap: wrap; width: 100%; margin: 2rem 0; gap: 2rem; justify-content: center; }
+  .static-item { display: flex; flex-wrap: wrap; background:#fff; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); overflow:hidden; }
+  .static-side { flex-direction: row; align-items: center; }
+  .static-side img { width: 50%; height:auto; }
+  .static-side .static-desc { width:50%; padding:1rem; text-align:left; }
+  .static-bottom { flex-direction: column; }
+  .static-bottom img { width: 100%; height:auto; }
+  .static-bottom .static-desc { width: 100%; padding:1rem; text-align:center; }
+  .static-desc h3 { margin-bottom:0.5rem; }
+  .static-desc p { margin:0; color:#555; font-size:0.95rem; }
 
   @media (max-width:900px){
     .carousel-container{flex-direction:column;}
@@ -157,7 +106,9 @@
     .lb-container{flex-direction:column; width:90%; height:auto;}
     .lb-container img{position:relative; max-width:100%; max-height:300px; margin-right:0; margin-bottom:1rem;}
     #topLbText{width:100%;}
-    .static-item img{height:150px;}
+    .static-item{width: 98%;}
+    .static-side img{width:50%;}
+    .static-side .static-desc{width:50%;}
   }
 </style>
 </head>
@@ -169,6 +120,8 @@
     <p>Photography Portfolio: 2023 - Present</p>
   </div>
 </header>
+
+<div class="divider"></div>
 
 <!-- Top Row -->
 <div class="top-row">
@@ -200,27 +153,30 @@
 
 <div class="divider"></div>
 
-<!-- New Static Row -->
+<!-- Full-width Static Row -->
 <div class="static-row">
-  <div class="static-item">
-    <img src="7.jpg" alt="Photo 7">
-    <div class="static-desc">
-      <h3>Photo 7</h3>
-      <p>Description or camera settings for Photo 7.</p>
-    </div>
-  </div>
-  <div class="static-item">
+  <div class="static-item static-bottom" style="width:28%;">
     <img src="8.jpg" alt="Photo 8">
     <div class="static-desc">
       <h3>Photo 8</h3>
-      <p>Description or camera settings for Photo 8.</p>
+      <p>Description below the image.</p>
     </div>
   </div>
-  <div class="static-item">
-    <img src="9.jpg" alt="Photo 9">
-    <div class="static-desc">
-      <h3>Photo 9</h3>
-      <p>Description or camera settings for Photo 9.</p>
+
+  <div style="display:flex; flex-direction:column; width:48%; gap:2rem;">
+    <div class="static-item static-side">
+      <img src="7.jpg" alt="Photo 7">
+      <div class="static-desc">
+        <h3>Photo 7</h3>
+        <p>Description on the side of the image.</p>
+      </div>
+    </div>
+    <div class="static-item static-side">
+      <img src="9.jpg" alt="Photo 9">
+      <div class="static-desc">
+        <h3>Photo 9</h3>
+        <p>Description on the side of the image.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -234,7 +190,6 @@
     <button class="lb-close" id="topLbClose" aria-label="Close">&times;</button>
     <button class="lb-nav lb-prev" id="topLbPrev" aria-label="Previous">&#10094;</button>
 
-    <!-- All lightbox images stacked, crossfade like carousel -->
     <img src="2.jpg" class="active" alt="Photo 2">
     <img src="3.jpg" alt="Photo 3">
     <img src="5.jpg" alt="Photo 5">
