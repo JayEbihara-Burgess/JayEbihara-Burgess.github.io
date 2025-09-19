@@ -1,180 +1,336 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Jay Ebihara-Burgess — Photography</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #f8f8f8;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-    }
+<meta charset="utf-8">
+<title>Jay Ebihara-Burgess — Photography</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+  }
+  h1,h2,h3 { margin: 0; }
 
-    h1 {
-      margin-bottom: 2rem;
-      font-size: 2rem;
-      letter-spacing: 1px;
-    }
+  header.site-banner {
+    width: 100%;
+    background: #1b1b1b;
+    color: #fff;
+    text-align: center;
+    padding: 4rem 1rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  header.site-banner::before {
+    content: "";
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg,#0a84ff,#5ac8fa);
+    pointer-events: none;
+  }
+  header.site-banner .banner-content { position: relative; z-index: 1; }
+  header.site-banner h1 { font-size:3rem; letter-spacing:1.5px; margin-bottom:0.75rem; color:#f5f5f5; }
+  header.site-banner p { font-size:1.25rem; font-weight:300; color:#dcdcdc; opacity:0.9; margin:0; }
 
-    /* Top row of thumbnails */
-    .top-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
+  /* ---------- Top row ---------- */
+  .top-row {
+    display: flex; gap:1rem; margin:2rem auto; max-width:1000px; padding:0 1rem;
+    flex-wrap:wrap; justify-content:center;
+  }
+  .top-row .card {
+    background:#fff; padding:0.5rem; border-radius:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08); flex:1 1 230px; max-width:230px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease; cursor:pointer;
+  }
+  .top-row img { width:100%; height:auto; border-radius:8px; display:block; }
 
-    .top-row .card {
-      background: #fff;
-      padding: 0.5rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      flex: 1;
-      max-width: 180px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  .divider { width:80%; height:2px; background:#b0bec5; margin:2rem 0; }
 
-    .top-row img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      display: block;
-    }
+  /* ---------- Carousel + Info Box ---------- */
+  .carousel-container { display:flex; align-items:center; justify-content:center; gap:1rem; width:90%; max-width:900px; position:relative; margin-bottom:3rem; flex-wrap:wrap; }
+  .carousel-wrapper { position:relative; width:50%; height:500px; display:flex; align-items:center; justify-content:center; }
+  .carousel img { position:absolute; top:0; left:0; max-width:100%; max-height:100%; width:auto; height:auto; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.15); opacity:0; transition:opacity 0.6s ease, transform 0.5s ease; }
+  .carousel img.active { opacity:1; z-index:1; transform:scale(1.02); }
+  .info-box { width:35%; background:#fff; border-radius:15px; padding:1.5rem; box-shadow:0 6px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; justify-content:center; height:510px; }
+  .info-box h3 { margin-bottom:0.75rem; font-size:1.5rem; }
+  .info-box p { margin:0; line-height:1.5; font-size:1rem; color:#555; }
+  .arrow { position:absolute; top:50%; transform:translateY(-50%); background:#fff; border:2px solid #333; border-radius:50%; width:45px; height:45px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background 0.2s, transform 0.2s; z-index:2; }
+  .arrow:hover { background:#f0f0f0; transform:translateY(-50%) scale(1.08); }
+  .arrow.left { left:-60px; } .arrow.right { right:-60px; }
 
-    /* Divider line */
-    .divider {
-      width: 80%;
-      height: 2px;
-      background: #b0bec5;
-      margin: 2rem 0;
-    }
+  /* ---------- Lightbox ---------- */
+  .lightbox-overlay {
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    z-index:1000; opacity:0; pointer-events:none; transition:opacity 0.4s ease;
+  }
+  .lightbox-overlay.show { opacity:1; pointer-events:auto; }
+  .lb-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
+  .lb-container {
+    position: relative;
+    width: 60%;
+    height: 70vh;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+  #topLbImage {
+    max-width: 65%;
+    max-height: 70vh;
+    border-radius: 8px;
+    object-fit: contain;
+    margin-right: 5%;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  #topLbTitle {
+    height: 6vh;
+    margin-bottom:0.5rem;
+    font-size:1.5rem;
+    font-weight:600;
+    margin-left: -15%;
+    color:#000;
+  }
+  #topLbDesc {
+    color: #000;
+    height: 34vh;
+    margin-left: -15%;
+    text-align: left;
+  }
+  .lb-close { position:absolute; top:10px; right:10px; font-size:2rem; color:#000; background:none; border:none; cursor:pointer; }
+  .lb-nav { position:absolute; top:50%; transform:translateY(-50%); font-size:2rem; color:#000; background:none; border:none; cursor:pointer; }
+  .lb-prev { left:10px; }
+  .lb-next { right:10px; }
 
-    /* Bottom carousel */
-    .carousel-container {
-      position: relative;
-      width: 90%;
-      max-width: 1000px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+  /* ---------- New Static Row (no hover, separate description) ---------- */
+  .static-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem auto;
+    flex-wrap: wrap;
+    max-width: 1000px;
+  }
+  .static-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 250px;
+  }
+  .static-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    pointer-events: none;
+  }
+  .static-desc {
+    margin-top: 0.75rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    width: 100%;
+    text-align: center;
+  }
+  .static-desc h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+  .static-desc p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #555;
+  }
 
-    .carousel {
-      display: flex;
-      transition: transform 0.5s ease;
-      gap: 1rem;
-    }
-
-    .carousel img {
-      border-radius: 10px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      transition: transform 0.5s ease, opacity 0.5s ease;
-      max-height: 500px;
-      width: auto;
-    }
-
-    .carousel img.small {
-      transform: scale(0.8);
-      opacity: 0.6;
-    }
-
-    .carousel img.large {
-      transform: scale(1);
-      opacity: 1;
-    }
-
-    /* Arrows */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #fff;
-      border: 2px solid #333;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s;
-      z-index: 2;
-    }
-
-    .arrow:hover {
-      background: #f0f0f0;
-    }
-
-    .arrow.left {
-      left: -50px;
-    }
-
-    .arrow.right {
-      right: -50px;
-    }
-  </style>
+  @media (max-width:900px){
+    .carousel-container{flex-direction:column;}
+    .carousel-wrapper,.info-box{width:90%; height:auto;}
+    .info-box{margin-top:1rem; height:auto;}
+    .lb-container{flex-direction:column;}
+    #topLbImage,#topLbDesc,#topLbTitle{max-width:100%;}
+    .static-item img{height:150px;}
+  }
+</style>
 </head>
 <body>
-  <h1>Jay Ebihara-Burgess — Photography</h1>
 
-  <!-- Top row of smaller images -->
-  <div class="top-row">
-    <div class="card"><img src="2.jpg" alt="Top preview 1"></div>
-    <div class="card"><img src="3.jpg" alt="Top preview 2"></div>
-    <div class="card"><img src="5.jpg" alt="Top preview 3"></div>
-    <div class="card"><img src="6.jpg" alt="Top preview 4"></div>
+<header class="site-banner">
+  <div class="banner-content">
+    <h1>Jay Ebihara-Burgess</h1>
+    <p>Photography Portfolio: 2023 - Present</p>
   </div>
+</header>
 
-  <div class="divider"></div>
+<!-- Top Row -->
+<div class="top-row">
+  <div class="card"><img src="2.jpg" alt="Photo 2"></div>
+  <div class="card"><img src="3.jpg" alt="Photo 3"></div>
+  <div class="card"><img src="5.jpg" alt="Photo 5"></div>
+  <div class="card"><img src="6.jpg" alt="Photo 6"></div>
+</div>
 
-  <!-- Bottom carousel -->
-  <div class="carousel-container">
-    <div class="arrow left" onclick="moveCarousel(-1)">&#9664;</div>
+<div class="divider"></div>
+
+<!-- Carousel -->
+<div class="carousel-container">
+  <div class="arrow left" onclick="moveCarousel(-1)">&#9664;</div>
+  <div class="carousel-wrapper">
     <div class="carousel" id="carousel">
-      <img src="1.jpg" alt="Vertical 1">
+      <img src="1.jpg" class="active" alt="Vertical 1">
       <img src="4.jpg" alt="Vertical 2">
       <img src="10.jpg" alt="Vertical 3">
       <img src="11.jpg" alt="Vertical 4">
     </div>
-    <div class="arrow right" onclick="moveCarousel(1)">&#9654;</div>
   </div>
+  <div class="info-box" id="infoBox">
+    <h3>Placeholder Title 1</h3>
+    <p>Placeholder description or camera settings for this image.</p>
+  </div>
+  <div class="arrow right" onclick="moveCarousel(1)">&#9654;</div>
+</div>
 
-  <script>
-    const carousel = document.getElementById("carousel");
-    const images = carousel.querySelectorAll("img");
-    let currentIndex = 1; // start with second image as centre
+<div class="divider"></div>
 
-    function updateCarousel() {
-      images.forEach((img, index) => {
-        img.classList.remove("large", "small");
-        if (index === currentIndex) {
-          img.classList.add("large");
-        } else {
-          img.classList.add("small");
-        }
-      });
+<!-- New Static Row with Separate Descriptions -->
+<div class="static-row">
+  <div class="static-item">
+    <img src="7.jpg" alt="Photo 7">
+    <div class="static-desc">
+      <h3>Photo 7</h3>
+      <p>Description or camera settings for Photo 7.</p>
+    </div>
+  </div>
+  <div class="static-item">
+    <img src="8.jpg" alt="Photo 8">
+    <div class="static-desc">
+      <h3>Photo 8</h3>
+      <p>Description or camera settings for Photo 8.</p>
+    </div>
+  </div>
+  <div class="static-item">
+    <img src="9.jpg" alt="Photo 9">
+    <div class="static-desc">
+      <h3>Photo 9</h3>
+      <p>Description or camera settings for Photo 9.</p>
+    </div>
+  </div>
+</div>
 
-      // shift carousel so centre image is in middle
-      const offset = -(currentIndex - 1) * (images[0].clientWidth + 16); 
-      carousel.style.transform = `translateX(${offset}px)`;
-    }
+<div class="divider"></div>
 
-    function moveCarousel(direction) {
-      currentIndex += direction;
-      if (currentIndex < 0) currentIndex = images.length - 1;
-      if (currentIndex >= images.length) currentIndex = 0;
-      updateCarousel();
-    }
+<!-- Lightbox -->
+<div id="topLightbox" class="lightbox-overlay" aria-hidden="true">
+  <div class="lb-backdrop" id="topLbBackdrop"></div>
+  <div class="lb-container">
+    <button class="lb-close" id="topLbClose" aria-label="Close">&times;</button>
+    <button class="lb-nav lb-prev" id="topLbPrev" aria-label="Previous">&#10094;</button>
+    <img id="topLbImage" alt="">
+    <div>
+      <h3 id="topLbTitle">Photo Title</h3>
+      <div id="topLbDesc">Default description here.</div>
+    </div>
+    <button class="lb-nav lb-next" id="topLbNext" aria-label="Next">&#10095;</button>
+  </div>
+</div>
 
-    updateCarousel();
-  </script>
+<script>
+  // Carousel
+  const carousel=document.getElementById("carousel");
+  const images=carousel.querySelectorAll("img");
+  const infoBox=document.getElementById("infoBox");
+  const infoData=[
+    {title:"Placeholder Title 1",description:"Placeholder description or camera settings for this image."},
+    {title:"Placeholder Title 2",description:"Placeholder description or camera settings for this image."},
+    {title:"Placeholder Title 3",description:"Placeholder description or camera settings for this image."},
+    {title:"Placeholder Title 4",description:"Placeholder description or camera settings for this image."},
+  ];
+  let currentIndex=0;
+  function updateCarousel(){ 
+    images.forEach((img,i)=>img.classList.toggle("active",i===currentIndex));
+    infoBox.querySelector("h3").textContent=infoData[currentIndex].title;
+    infoBox.querySelector("p").textContent=infoData[currentIndex].description;
+  }
+  function moveCarousel(dir){ 
+    currentIndex+=dir; 
+    if(currentIndex<0) currentIndex=images.length-1; 
+    if(currentIndex>=images.length) currentIndex=0; 
+    updateCarousel(); 
+  }
+  updateCarousel();
+
+  // Lightbox for first top-row
+  const topImages=document.querySelectorAll('.top-row img');
+  const topLightbox=document.getElementById('topLightbox');
+  const topLbImage=document.getElementById('topLbImage');
+  const topLbTitle=document.getElementById('topLbTitle');
+  const topLbDesc=document.getElementById('topLbDesc');
+  const topLbClose=document.getElementById('topLbClose');
+  const topLbPrev=document.getElementById('topLbPrev');
+  const topLbNext=document.getElementById('topLbNext');
+  const topLbBackdrop=document.getElementById('topLbBackdrop');
+  const topDescriptions=[
+    "Photo 2 default description.",
+    "Photo 3 default description.",
+    "Photo 5 default description.",
+    "Photo 6 default description."
+  ];
+  const topTitles=[
+    "Photo 2",
+    "Photo 3",
+    "Photo 5",
+    "Photo 6"
+  ];
+  let topIndex=0;
+
+  function openTopLightbox(index){
+    topIndex=index;
+    topLbImage.src=topImages[index].src;
+    topLbTitle.textContent=topTitles[index];
+    topLbDesc.textContent=topDescriptions[index]||"Default description.";
+    topLightbox.classList.add('show');
+    topLightbox.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  }
+
+  function closeTopLightbox(){
+    topLightbox.classList.remove('show');
+    topLightbox.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+
+  function prevTopImage(){ 
+    topIndex=(topIndex+topImages.length-1)%topImages.length; 
+    openTopLightbox(topIndex); 
+  }
+  function nextTopImage(){ 
+    topIndex=(topIndex+1)%topImages.length; 
+    openTopLightbox(topIndex); 
+  }
+
+  topImages.forEach((img,i)=>img.addEventListener('click',()=>openTopLightbox(i)));
+  topLbClose.addEventListener('click', closeTopLightbox);
+  topLbPrev.addEventListener('click', prevTopImage);
+  topLbNext.addEventListener('click', nextTopImage);
+  topLbBackdrop.addEventListener('click', closeTopLightbox);
+
+  window.addEventListener('keydown', ev=>{
+    if(!topLightbox.classList.contains('show')) return;
+    if(ev.key==='Escape') closeTopLightbox();
+    if(ev.key==='ArrowLeft') prevTopImage();
+    if(ev.key==='ArrowRight') nextTopImage();
+  });
+</script>
+
 </body>
 </html>
