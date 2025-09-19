@@ -50,14 +50,25 @@
     display: flex; gap:1rem; margin:2rem auto; max-width:1000px; padding:0 1rem;
     flex-wrap:wrap; justify-content:center;
   }
+  /* Top Row Card Hover Effect */
   .top-row .card {
-    background:#fff; padding:0.5rem; border-radius:12px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.08); flex:1 1 230px; max-width:230px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease; cursor:pointer;
+    flex: 1 1 23.5%;  /* each card ~23.5% of row width */
+    max-width: 23.5%;
+    min-width: 150px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
   }
+
   .top-row .card:hover {
-    transform:translateY(-6px); box-shadow:0 12px 36px rgba(0,0,0,0.12);
+    transform: scale(1.05);           /* slightly enlarges the card */
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15); /* adds a soft shadow */
   }
+  
+  .top-row img {
+    width: 100%;  /* image fills its card */
+    height: auto; /* maintains aspect ratio */
+  }
+
   .top-row img { width:100%; height:auto; border-radius:8px; display:block; }
 
   /* ---------- Carousel + Info Box ---------- */
@@ -291,7 +302,12 @@
     if(ev.key==='ArrowLeft') prevLightbox();
     if(ev.key==='ArrowRight') nextLightbox();
   });
+
 </script>
+
+<footer style="width:100%; text-align:center; padding:1rem 0; background:#f4f4f4; color:#555;">
+  <p>&copy; 2025 Jay Ebihara-Burgess. All rights reserved.</p>
+</footer>
 
 </body>
 </html>
