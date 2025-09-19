@@ -1,3 +1,16 @@
+import http.server
+import socketserver
+import os
+import webbrowser
+
+# List of ports to try
+PORTS = [8000, 8080, 5000, 3000]
+
+# ⚠️ Change this path to your actual Downloads folder path
+DOWNLOADS_FOLDER = os.path.expanduser("/Users/jayebihara-burgess/Downloads/")
+
+# Your HTML page
+html_content = """
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,106 +20,191 @@
 <style>
   * { box-sizing: border-box; }
   body {
-    margin: 0;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background: #f4f4f4;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
+    margin:0;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    background:#f4f4f4;
+    color:#333;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:0;
   }
-  h1,h2,h3 { margin: 0; }
+  h1,h2,h3 { margin:0; }
 
   /* ---------- Banner ---------- */
   header.site-banner {
-    width: 100vw;
-    height: 35vh;
-    background-image: url('hero.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% 30%; /* adjust image position */
-    color: #fff;
-    text-align: left;
-    padding: 6rem 4rem;
-    position: relative;
+    width:100vw;
+    height:35vh;
+    background-image:url('hero.jpg');
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position:50% 30%;
+    color:#fff;
+    text-align:left;
+    padding:6rem 4rem;
+    position:relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25); /* banner shadow */
   }
   header.site-banner::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    pointer-events: none;
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.4);
+    pointer-events:none;
   }
-  header.site-banner .banner-content { position: relative; z-index: 1; }
+  header.site-banner .banner-content { position:relative; z-index:1; }
   header.site-banner h1 { font-size:3rem; letter-spacing:1.5px; margin-bottom:0.75rem; color:#f5f5f5; }
   header.site-banner p { font-size:1.25rem; font-weight:300; color:#dcdcdc; opacity:0.9; margin:0; }
 
-  /* ---------- Divider ---------- */
   .divider { width:80%; height:2px; background:#b0bec5; margin:2rem 0; }
 
   /* ---------- Top row ---------- */
   .top-row {
-    display: flex; gap:1rem; margin:2rem auto; max-width:1000px; padding:0 1rem;
-    flex-wrap:wrap; justify-content:center;
+    display:flex;
+    gap:1rem;
+    margin:2rem auto;
+    max-width:1000px;
+    padding:0 1rem;
+    flex-wrap:wrap;
+    justify-content:center;
   }
-  /* Top Row Card Hover Effect */
   .top-row .card {
-    flex: 1 1 23.5%;  /* each card ~23.5% of row width */
-    max-width: 23.5%;
-    min-width: 150px;
+    flex:1 1 23.5%;
+    max-width:23.5%;
+    min-width:150px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
+    cursor:pointer;
   }
-
   .top-row .card:hover {
-    transform: scale(1.05);           /* slightly enlarges the card */
-    box-shadow: 0 12px 24px rgba(0,0,0,0.15); /* adds a soft shadow */
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
   }
-  
-  .top-row img {
-    width: 100%;  /* image fills its card */
-    height: auto; /* maintains aspect ratio */
-  }
-
   .top-row img { width:100%; height:auto; border-radius:8px; display:block; }
 
   /* ---------- Carousel + Info Box ---------- */
-  .carousel-container { display:flex; align-items:center; justify-content:center; gap:1rem; width:90%; max-width:900px; position:relative; margin-bottom:3rem; flex-wrap:wrap; }
-  .carousel-wrapper { position:relative; width:50%; height:500px; display:flex; align-items:center; justify-content:center; }
-  .carousel img { position:absolute; top:0; left:0; max-width:100%; max-height:100%; width:auto; height:auto; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.15); opacity:0; transition:opacity 1s ease, transform 0.9s ease; }
+  .carousel-container {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    width:90%;
+    max-width:900px;
+    position:relative;
+    margin-bottom:3rem;
+    flex-wrap:wrap;
+  }
+  .carousel-wrapper {
+    position:relative;
+    width:50%;
+    height:500px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .carousel img {
+    position:absolute;
+    top:0;
+    left:0;
+    max-width:100%;
+    max-height:100%;
+    width:auto;
+    height:auto;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+    opacity:0;
+    transition:opacity 1s ease, transform 0.9s ease;
+  }
   .carousel img.active { opacity:1; z-index:1; transform:scale(1.02); }
-  .info-box { width:35%; background:#fff; border-radius:15px; padding:1.5rem; box-shadow:0 6px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; justify-content:center; height:510px; }
+  .info-box {
+    width:35%;
+    background:#fff;
+    border-radius:15px;
+    padding:1.5rem;
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    height:510px;
+  }
   .info-box h3 { margin-bottom:0.75rem; font-size:1.5rem; }
   .info-box p { margin:0; line-height:1.5; font-size:1rem; color:#555; }
-  .arrow { position:absolute; top:50%; transform:translateY(-50%); background:#fff; border:2px solid #333; border-radius:50%; width:45px; height:45px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background 0.2s, transform 0.2s; z-index:2; }
+  .arrow {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:#fff;
+    border:2px solid #333;
+    border-radius:50%;
+    width:45px;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background 0.2s, transform 0.2s;
+    z-index:2;
+  }
   .arrow:hover { background:#f0f0f0; transform:translateY(-50%) scale(1.08); }
-  .arrow.left { left:-60px; } .arrow.right { right:-60px; }
+  .arrow.left { left:-60px; }
+  .arrow.right { right:-60px; }
 
   /* ---------- Lightbox ---------- */
-  .lightbox-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity 1s ease; }
+  .lightbox-overlay {
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 1s ease;
+  }
   .lightbox-overlay.show { opacity:1; pointer-events:auto; }
   .lb-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
-  .lb-container { position: relative; width: 60%; height: 70vh; background: white; padding: 1rem; border-radius: 8px; display: flex; flex-direction: row; align-items: center; gap: 1rem; justify-content: flex-end; }
-  .lb-container img { position:absolute; max-width:65%; max-height:70vh; border-radius:8px; object-fit:contain; margin-right:26%; box-shadow:0 4px 16px rgba(0,0,0,0.15); opacity:0; transition:opacity 1s ease, transform 0.9s ease; }
+  .lb-container {
+    position:relative;
+    width:60%;
+    height:70vh;
+    background:white;
+    padding:1rem;
+    border-radius:8px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    gap:1rem;
+    justify-content:flex-end;
+  }
+  .lb-container img {
+    position:absolute;
+    max-width:65%;
+    max-height:70vh;
+    border-radius:8px;
+    object-fit:contain;
+    margin-right:26%;
+    box-shadow:0 4px 16px rgba(0,0,0,0.15);
+    opacity:0;
+    transition:opacity 1s ease, transform 0.9s ease;
+  }
   .lb-container img.active { opacity:1; z-index:1; transform:scale(1.02); }
-  #topLbText { margin-bottom: 10rem; width:30%; margin-right: -6%; display:flex; flex-direction:column; justify-content:center; }
+  #topLbText { margin-bottom:0rem; width:30%; margin-right:-6%; display:flex; flex-direction:column; justify-content:center; }
   #topLbText h3 { font-size:1.5rem; margin-bottom:0.5rem; }
   #topLbText p { font-size:1rem; line-height:1.5; color:#555; }
+
   .lb-close, .lb-nav { background:none; border:none; cursor:pointer; font-size:2rem; color:#000; position:absolute; }
   .lb-close { top:10px; right:10px; }
   .lb-prev { left:10px; top:50%; transform:translateY(-50%); }
   .lb-next { right:10px; top:50%; transform:translateY(-50%); }
 
   /* ---------- Full-width Static Row ---------- */
-  .static-row { display: flex; flex-wrap: wrap; width: 100%; margin: 2rem 0; gap: 2rem; justify-content: center; }
-  .static-item { display: flex; flex-wrap: wrap; background:#fff; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); overflow:hidden; }
-  .static-side { flex-direction: row; align-items: center; }
-  .static-side img { width: 50%; height:auto; }
+  .static-row { display:flex; flex-wrap:wrap; width:100%; margin:2rem 0; gap:2rem; justify-content:center; }
+  .static-item { display:flex; flex-wrap:wrap; background:#fff; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); overflow:hidden; }
+  .static-side { flex-direction:row; align-items:center; }
+  .static-side img { width:50%; height:auto; }
   .static-side .static-desc { width:50%; padding:1rem; text-align:left; }
-  .static-bottom { flex-direction: column; }
-  .static-bottom img { width: 100%; height:auto; }
-  .static-bottom .static-desc { width: 100%; padding:1rem; text-align:center; }
+  .static-bottom { flex-direction:column; }
+  .static-bottom img { width:100%; height:auto; }
+  .static-bottom .static-desc { width:100%; padding:1rem; text-align:center; }
   .static-desc h3 { margin-bottom:0.5rem; }
   .static-desc p { margin:0; color:#555; font-size:0.95rem; }
 
@@ -117,7 +215,7 @@
     .lb-container{flex-direction:column; width:90%; height:auto;}
     .lb-container img{position:relative; max-width:100%; max-height:300px; margin-right:0; margin-bottom:1rem;}
     #topLbText{width:100%;}
-    .static-item{width: 98%;}
+    .static-item{width:98%;}
     .static-side img{width:50%;}
     .static-side .static-desc{width:50%;}
   }
@@ -173,7 +271,6 @@
       <p>Description below the image.</p>
     </div>
   </div>
-
   <div style="display:flex; flex-direction:column; width:48%; gap:2rem;">
     <div class="static-item static-side">
       <img src="7.jpg" alt="Photo 7">
@@ -251,20 +348,20 @@
   const lbNext=document.getElementById('topLbNext');
   const lbBackdrop=document.getElementById('topLbBackdrop');
 
-  const topTitles=["Photo 2","Photo 3","Photo 5","Photo 6"];
+  const topTitles=["Porsche Boxtser","Motherhood","Lotus Elise","Station Phoenix<br>Road"];
   const topDescriptions=[
-    "Photo 2 default description.",
-    "Photo 3 default description.",
-    "Photo 5 default description.",
-    "Photo 6 default description."
+    "Brands Hatch Track Day:<br><br>Canon R10<br>Focal length: 180mm<br>ISO: 100<br>Exposure: 1/50<br>Aperture: f/25",
+    "Kōjima Island:<br><br>Canon R10<br>Focal length: 215mm<br>ISO: 800<br>Exposure: 1/4000<br>Aperture: f/6.3",
+    "Nichinan City:<br><br>Canon R10<br>Focal length: 45mm<br>ISO: 250<br>Exposure: 1/640<br>Aperture: f/6.3",
+    "Nichinan City:<br><br>Canon R10<br>Focal length: 45mm<br>ISO: 250<br>Exposure: 1/640<br>Aperture: f/6.3"
   ];
   let lbIndex=0;
 
   function openLightbox(index){
     lbIndex=index;
     lbImages.forEach((img,i)=>img.classList.toggle('active',i===lbIndex));
-    lbTitle.textContent=topTitles[lbIndex];
-    lbDesc.textContent=topDescriptions[lbIndex];
+    lbTitle.innerHTML = topTitles[lbIndex];
+    lbDesc.innerHTML = topDescriptions[lbIndex];
     document.getElementById('topLightbox').classList.add('show');
     document.getElementById('topLightbox').setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
@@ -279,15 +376,15 @@
   function prevLightbox(){
     lbIndex=(lbIndex+lbImages.length-1)%lbImages.length;
     lbImages.forEach((img,i)=>img.classList.toggle('active',i===lbIndex));
-    lbTitle.textContent=topTitles[lbIndex];
-    lbDesc.textContent=topDescriptions[lbIndex];
+    lbTitle.innerHTML = topTitles[lbIndex];
+    lbDesc.innerHTML = topDescriptions[lbIndex];
   }
 
   function nextLightbox(){
     lbIndex=(lbIndex+1)%lbImages.length;
     lbImages.forEach((img,i)=>img.classList.toggle('active',i===lbIndex));
-    lbTitle.textContent=topTitles[lbIndex];
-    lbDesc.textContent=topDescriptions[lbIndex];
+    lbTitle.innerHTML = topTitles[lbIndex];
+    lbDesc.innerHTML = topDescriptions[lbIndex];
   }
 
   topImages.forEach((img,i)=>img.addEventListener('click',()=>openLightbox(i)));
@@ -302,7 +399,6 @@
     if(ev.key==='ArrowLeft') prevLightbox();
     if(ev.key==='ArrowRight') nextLightbox();
   });
-
 </script>
 
 <footer style="width:100%; text-align:center; padding:1rem 0; background:#f4f4f4; color:#555;">
@@ -311,3 +407,38 @@
 
 </body>
 </html>
+"""
+
+class MyHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path in ["/", "/index.html"]:
+            self.send_response(200)
+            self.send_header("Content-type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(html_content.encode("utf-8"))
+        else:
+            file_path = os.path.join(DOWNLOADS_FOLDER, self.path.lstrip("/"))
+            if os.path.isfile(file_path):
+                self.send_response(200)
+                if file_path.endswith(".jpg"):
+                    self.send_header("Content-type", "image/jpeg")
+                elif file_path.endswith(".png"):
+                    self.send_header("Content-type", "image/png")
+                else:
+                    self.send_header("Content-type", "application/octet-stream")
+                self.end_headers()
+                with open(file_path, "rb") as f:
+                    self.wfile.write(f.read())
+            else:
+                self.send_error(404, "File not found")
+
+# Try each port until one works
+for PORT in PORTS:
+    try:
+        with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+            print(f"Serving portfolio at http://localhost:{PORT}")
+            webbrowser.open(f"http://localhost:{PORT}")
+            httpd.serve_forever()
+        break
+    except OSError as e:
+        print(f"Port {PORT} failed: {e}, trying next port...")
