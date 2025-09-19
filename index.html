@@ -4,495 +4,170 @@
   <meta charset="utf-8">
   <title>Jay Ebihara-Burgess — Photography</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-    /* ---------- Base ---------- */
-    :root{
-      --bg: #faf9f7;
-      --muted: #6b6b6b;
-      --accent: #0a84ff;
-      --card: #ffffff;
-      --shadow: 0 8px 24px rgba(15,15,15,0.08);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
     body {
       margin: 0;
-      font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: #222;
-      line-height: 1.5;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: #f8f8f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
     }
 
-    /* ---------- Header ---------- */
-    header {
-      background: #0b0b0b;
-      color: #fff;
-      text-align: center;
-      padding: 2rem 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    h1 {
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      letter-spacing: 1px;
     }
-    header h1 { margin:0; font-size:2.25rem; letter-spacing:1.5px; font-weight:600; }
-    header p { margin:0.5rem 0 0; font-size:1rem; font-weight:300; color:#dcdcdc; }
 
-    /* ---------- Layout ---------- */
-    main { max-width:1200px; margin:2.25rem auto; padding:0 1rem; }
-    section { margin-bottom:2.5rem; }
-    h2 {
-      font-size:1.25rem;
-      margin:0 0 1rem 0;
-      display:inline-block;
-      border-bottom:2px solid rgba(0,0,0,0.06);
-      padding-bottom:0.45rem;
-      color:#111;
-    }
-    p.lead { color:var(--muted); margin-top:0.5rem; max-width:72ch; }
-
-    /* ---------- Gallery grid ---------- */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* Top row of smaller image cards */
+    .top-row {
+      display: flex;
       gap: 1rem;
-      align-items: start;
+      margin-bottom: 2rem;
     }
 
-    .thumb {
-      background: var(--card);
+    .top-row .card {
+      background: #fff;
+      padding: 0.5rem;
       border-radius: 10px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .top-row img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    /* Divider line */
+    .divider {
+      width: 80%;
+      height: 2px;
+      background: #b0bec5;
+      margin: 2rem 0;
+    }
+
+    /* Bottom carousel */
+    .carousel-container {
       position: relative;
-      cursor: pointer;
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-    .thumb:hover { transform: translateY(-6px); box-shadow: 0 18px 36px rgba(15,15,15,0.12); }
-
-    .thumb img {
-      display:block;
-      width:100%;
-      height: 100%;
-      object-fit: cover;
-      aspect-ratio: 3/2;
-    }
-
-    /* Tag for data images so viewer knows they are the +data pair */
-    .meta-tag {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      letter-spacing:.3px;
-    }
-
-    /* Make thumbnails for vertical images look slightly taller */
-    .thumb.vertical img { aspect-ratio: 2/3; height: 100%; object-position: center; }
-
-    /* ---------- Contact & Footer ---------- */
-    footer {
-      background: #0b0b0b;
-      color: #fff;
-      text-align: center;
-      padding: 1.25rem;
-      margin-top: 2.5rem;
-      font-size: 0.9rem;
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* ---------- Modal carousel (lightbox) ---------- */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      display: none; /* toggled via JS */
+      width: 90%;
+      max-width: 1000px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1200;
-    }
-    .lightbox.show { display: flex; }
-
-    .lb-backdrop {
-      position:absolute; inset:0;
-      background: rgba(6,6,6,0.75);
-      backdrop-filter: blur(4px);
     }
 
-    .lb-stage {
-      position: relative;
-      max-width: 1100px;
-      width: calc(100% - 3rem);
-      margin: 1rem;
-      border-radius: 12px;
+    .carousel {
+      display: flex;
       overflow: hidden;
-      z-index: 2;
-      box-shadow: 0 28px 60px rgba(0,0,0,0.5);
-      background: linear-gradient(180deg,#0b0b0b,#0f0f0f);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 24px;
+      width: 100%;
+      justify-content: center;
+      gap: 1rem;
     }
 
-    .lb-image {
-      max-height: calc(100vh - 160px);
-      max-width: calc(100% - 200px);
-      width: auto;
-      height: auto;
-      display:block;
-      border-radius:6px;
-      object-fit: contain;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    .carousel img {
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
-    /* side panel: caption + thumbnails */
-    .lb-info {
-      width: 180px;
-      margin-left: 18px;
-      color:#fff;
-      font-size: 13px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .carousel img.small {
+      width: 200px;
+      opacity: 0.7;
     }
 
-    .lb-caption { font-weight:600; color:#fff; }
-    .lb-sub { color:#cfcfcf; font-size:12px; line-height:1.4; }
-
-    .lb-thumbs { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px; }
-    .lb-thumbs button {
-      width:48px; height:48px; padding:0; border-radius:6px; overflow:hidden; border:2px solid transparent; background:#111; cursor:pointer;
+    .carousel img.large {
+      width: 280px;
+      opacity: 1;
+      transform: scale(1.05);
     }
-    .lb-thumbs img { width:100%; height:100%; object-fit:cover; display:block; opacity:0.9 }
-    .lb-thumbs button.active { border-color: var(--accent); box-shadow:0 6px 18px rgba(10,132,255,0.14) }
 
-    /* navigation arrows */
-    .nav-arrow {
+    /* Arrows */
+    .arrow {
       position: absolute;
-      top:50%;
+      top: 50%;
       transform: translateY(-50%);
-      width:56px; height:56px;
-      border-radius:999px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,0.06);
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.06);
-      cursor:pointer;
-      z-index: 1300;
-      backdrop-filter: blur(4px);
-      transition: transform .12s ease, background .12s ease;
-    }
-    .nav-arrow:hover { transform: translateY(-50%) scale(1.06); background: rgba(255,255,255,0.09); }
-    .nav-left { left: 18px; }
-    .nav-right { right: 18px; }
-
-    .nav-arrow svg { width:22px; height:22px; }
-
-    /* close button */
-    .lb-close {
-      position:absolute; top:12px; right:12px;
-      background: rgba(255,255,255,0.06); border-radius:8px; padding:8px; cursor:pointer; color:#fff; z-index:1400;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      z-index: 2;
     }
 
-    /* responsive tweaks */
-    @media (max-width:900px){
-      .lb-stage{ flex-direction:column; padding:18px }
-      .lb-info { width:100%; margin-left:0; order:2; flex-direction:row; justify-content:space-between; align-items:center }
-      .lb-image { max-width: calc(100% - 28px); max-height: calc(60vh); }
+    .arrow:hover {
+      background: #f0f0f0;
     }
 
-    @media (max-width:480px){
-      .nav-arrow { width:48px;height:48px }
-      .lb-stage{ padding:12px }
-      .lb-info{ display:none } /* keep the lightbox simple on tiny screens */
+    .arrow.left {
+      left: -50px;
     }
 
-    /* subtle indicator row */
-    .indicator-row { display:flex; gap:8px; justify-content:center; margin-top:12px; }
-    .indicator { width:9px; height:9px; border-radius:99px; background: rgba(255,255,255,0.18) }
-    .indicator.active { background: var(--accent) }
+    .arrow.right {
+      right: -50px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Jay Ebihara-Burgess</h1>
-    <p>Photography Portfolio</p>
-  </header>
+  <h1>Jay Ebihara-Burgess — Photography</h1>
 
-  <main>
-    <section id="about">
-      <h2>About Me</h2>
-      <p class="lead">Welcome to my photography portfolio. I have gathered some of my favourite photos here, some due to their technical element and others for their aesthetic purposes.</p>
-    </section>
+  <!-- Top row of smaller images -->
+  <div class="top-row">
+    <div class="card"><img src="2.jpg" alt="Top preview 1"></div>
+    <div class="card"><img src="3.jpg" alt="Top preview 2"></div>
+    <div class="card"><img src="5.jpg" alt="Top preview 3"></div>
+    <div class="card"><img src="6.jpg" alt="Top preview 4"></div>
+  </div>
 
-    <section id="portfolio">
-      <h2>Portfolio</h2>
+  <div class="divider"></div>
 
-      <!-- Gallery grid -->
-      <div class="gallery" aria-label="Photography gallery">
-        <!-- 1 (vertical) -->
-        <div class="thumb vertical" data-vertical="true" data-idx="0" tabindex="0" role="button" aria-label="Open vertical carousel - image 1">
-          <img src="1.jpg" alt="Photo 1">
-          <div class="meta-tag">1</div>
-        </div>
-
-        <div class="thumb" tabindex="0">
-          <img src="1+data.jpg" alt="Photo 1 data">
-          <div class="meta-tag">data</div>
-        </div>
-
-        <!-- 2 -->
-        <div class="thumb" tabindex="0"><img src="2.jpg" alt="Photo 2"><div class="meta-tag">2</div></div>
-        <div class="thumb" tabindex="0"><img src="2+data.jpg" alt="Photo 2 data"><div class="meta-tag">data</div></div>
-
-        <!-- 3 -->
-        <div class="thumb" tabindex="0"><img src="3.jpg" alt="Photo 3"><div class="meta-tag">3</div></div>
-        <div class="thumb" tabindex="0"><img src="3+data.jpg" alt="Photo 3 data"><div class="meta-tag">data</div></div>
-
-        <!-- 4 (vertical) -->
-        <div class="thumb vertical" data-vertical="true" data-idx="1" tabindex="0" role="button" aria-label="Open vertical carousel - image 4">
-          <img src="4.jpg" alt="Photo 4">
-          <div class="meta-tag">4</div>
-        </div>
-        <div class="thumb" tabindex="0"><img src="4+data.jpg" alt="Photo 4 data"><div class="meta-tag">data</div></div>
-
-        <!-- 5 -->
-        <div class="thumb" tabindex="0"><img src="5.jpg" alt="Photo 5"><div class="meta-tag">5</div></div>
-        <div class="thumb" tabindex="0"><img src="5+data.jpg" alt="Photo 5 data"><div class="meta-tag">data</div></div>
-
-        <!-- 6 -->
-        <div class="thumb" tabindex="0"><img src="6.jpg" alt="Photo 6"><div class="meta-tag">6</div></div>
-        <div class="thumb" tabindex="0"><img src="6+data.jpg" alt="Photo 6 data"><div class="meta-tag">data</div></div>
-
-        <!-- 7 -->
-        <div class="thumb" tabindex="0"><img src="7.jpg" alt="Photo 7"><div class="meta-tag">7</div></div>
-        <div class="thumb" tabindex="0"><img src="7+data.jpg" alt="Photo 7 data"><div class="meta-tag">data</div></div>
-
-        <!-- 8 -->
-        <div class="thumb" tabindex="0"><img src="8.jpg" alt="Photo 8"><div class="meta-tag">8</div></div>
-        <div class="thumb" tabindex="0"><img src="8+data.jpg" alt="Photo 8 data"><div class="meta-tag">data</div></div>
-
-        <!-- 9 -->
-        <div class="thumb" tabindex="0"><img src="9.jpg" alt="Photo 9"><div class="meta-tag">9</div></div>
-        <div class="thumb" tabindex="0"><img src="9+data.jpg" alt="Photo 9 data"><div class="meta-tag">data</div></div>
-
-        <!-- 10 (vertical) -->
-        <div class="thumb vertical" data-vertical="true" data-idx="2" tabindex="0" role="button" aria-label="Open vertical carousel - image 10">
-          <img src="10.jpg" alt="Photo 10">
-          <div class="meta-tag">10</div>
-        </div>
-        <div class="thumb" tabindex="0"><img src="10+data.jpg" alt="Photo 10 data"><div class="meta-tag">data</div></div>
-
-        <!-- 11 (vertical) -->
-        <div class="thumb vertical" data-vertical="true" data-idx="3" tabindex="0" role="button" aria-label="Open vertical carousel - image 11">
-          <img src="11.jpg" alt="Photo 11">
-          <div class="meta-tag">11</div>
-        </div>
-        <div class="thumb" tabindex="0"><img src="11+data.jpg" alt="Photo 11 data"><div class="meta-tag">data</div></div>
-      </div>
-    </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <p>If you would like to collaborate or enquire about my work, please do get in touch:</p>
-      <p>Email: <a href="mailto:jaye-b@outlook.com">jaye-b@outlook.com</a></p>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Jay Ebihara-Burgess. All rights reserved.</p>
-  </footer>
-
-  <!-- ---------- Lightbox / Carousel ---------- -->
-  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Vertical images carousel">
-    <div class="lb-backdrop" data-close="true"></div>
-
-    <div class="lb-stage" role="document" aria-live="polite">
-      <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
-
-      <button class="nav-arrow nav-left" id="prevBtn" aria-label="Previous image">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-
-      <img src="" class="lb-image" id="lbImage" alt="">
-
-      <button class="nav-arrow nav-right" id="nextBtn" aria-label="Next image">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-
-      <aside class="lb-info" id="lbInfo" aria-hidden="false">
-        <div>
-          <div class="lb-caption" id="lbCaption">Vertical Images</div>
-          <div class="lb-sub" id="lbSub">Use the arrows to navigate or press Esc to close.</div>
-        </div>
-
-        <div>
-          <div class="lb-thumbs" id="lbThumbs" aria-label="Thumbnails">
-            <!-- small thumbnails inserted by JS -->
-          </div>
-
-          <div class="indicator-row" id="lbIndicators" aria-hidden="true"></div>
-        </div>
-      </aside>
+  <!-- Bottom carousel -->
+  <div class="carousel-container">
+    <div class="arrow left" onclick="moveCarousel(-1)">&#9664;</div>
+    <div class="carousel" id="carousel">
+      <img src="1.jpg" class="small" alt="Vertical 1">
+      <img src="4.jpg" class="large" alt="Vertical 2">
+      <img src="10.jpg" class="small" alt="Vertical 3">
+      <img src="11.jpg" class="small" alt="Vertical 4">
     </div>
+    <div class="arrow right" onclick="moveCarousel(1)">&#9654;</div>
   </div>
 
   <script>
-    (function(){
-      /* ---------- Configuration: list of the vertical images in order ---------- */
-      const verticalImages = [
-        { src: '1.jpg', label: '1' },
-        { src: '4.jpg', label: '4' },
-        { src: '10.jpg', label: '10' },
-        { src: '11.jpg', label: '11' }
-      ];
+    const carousel = document.getElementById("carousel");
+    const images = carousel.querySelectorAll("img");
+    let currentIndex = 1; // start with second image emphasised
 
-      /* ---------- Elements ---------- */
-      const lightbox = document.getElementById('lightbox');
-      const lbImage = document.getElementById('lbImage');
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const lbClose = document.getElementById('lbClose');
-      const lbThumbs = document.getElementById('lbThumbs');
-      const lbIndicators = document.getElementById('lbIndicators');
-
-      let currentIndex = 0;
-      let startX = null; // for touch
-
-      /* ---------- Build small thumbnails and indicators ---------- */
-      verticalImages.forEach((it, i) => {
-        const btn = document.createElement('button');
-        btn.setAttribute('aria-label', 'Thumbnail ' + (i+1));
-        btn.dataset.index = i;
-        const img = document.createElement('img');
-        img.src = it.src;
-        img.alt = 'Thumb ' + it.label;
-        btn.appendChild(img);
-        btn.addEventListener('click', (e) => { goToIndex(i); });
-        lbThumbs.appendChild(btn);
-
-        // indicators
-        const ind = document.createElement('div');
-        ind.className = 'indicator' + (i===0 ? ' active' : '');
-        ind.dataset.index = i;
-        lbIndicators.appendChild(ind);
-      });
-
-      function openLightbox(initialIndex = 0){
-        currentIndex = initialIndex;
-        updateImage();
-        lightbox.classList.add('show');
-        lightbox.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        // focus management
-        lbClose.focus();
-      }
-
-      function closeLightbox(){
-        lightbox.classList.remove('show');
-        lightbox.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-      }
-
-      function updateImage(){
-        const item = verticalImages[currentIndex];
-        lbImage.src = item.src;
-        lbImage.alt = 'Image ' + item.label;
-        // update active thumb
-        Array.from(lbThumbs.children).forEach((b, idx) => {
-          b.classList.toggle('active', idx === currentIndex);
-        });
-        // update indicators
-        Array.from(lbIndicators.children).forEach((d, idx) => {
-          d.classList.toggle('active', idx === currentIndex);
-        });
-      }
-
-      function prev(){
-        currentIndex = (currentIndex - 1 + verticalImages.length) % verticalImages.length;
-        updateImage();
-      }
-      function next(){
-        currentIndex = (currentIndex + 1) % verticalImages.length;
-        updateImage();
-      }
-      function goToIndex(i){
-        currentIndex = i;
-        updateImage();
-      }
-
-      /* ---------- Wire up controls ---------- */
-      prevBtn.addEventListener('click', prev);
-      nextBtn.addEventListener('click', next);
-      lbClose.addEventListener('click', closeLightbox);
-
-      // Clicking backdrop closes
-      document.querySelector('.lb-backdrop').addEventListener('click', closeLightbox);
-
-      // Keyboard navigation
-      window.addEventListener('keydown', (ev) => {
-        if (!lightbox.classList.contains('show')) return;
-        if (ev.key === 'ArrowLeft') { ev.preventDefault(); prev(); }
-        if (ev.key === 'ArrowRight') { ev.preventDefault(); next(); }
-        if (ev.key === 'Escape') { ev.preventDefault(); closeLightbox(); }
-      });
-
-      // Touch - basic swipe
-      const stage = document.querySelector('.lb-stage');
-      stage.addEventListener('touchstart', (ev) => {
-        if (!ev.touches || ev.touches.length === 0) return;
-        startX = ev.touches[0].clientX;
-      }, {passive:true});
-      stage.addEventListener('touchend', (ev) => {
-        if (startX === null) return;
-        const endX = (ev.changedTouches && ev.changedTouches[0]) ? ev.changedTouches[0].clientX : null;
-        if (endX !== null){
-          const dx = endX - startX;
-          if (Math.abs(dx) > 40){
-            if (dx > 0) prev(); else next();
-          }
+    function updateCarousel() {
+      images.forEach((img, index) => {
+        img.classList.remove("large", "small");
+        if (index === currentIndex) {
+          img.classList.add("large");
+        } else {
+          img.classList.add("small");
         }
-        startX = null;
       });
+    }
 
-      /* ---------- Hook thumbnails in the gallery that are vertical ---------- */
-      document.querySelectorAll('.thumb.vertical').forEach(el => {
-        el.addEventListener('click', (e) => {
-          // data-idx maps to the verticalImages array index
-          const idx = Number(el.dataset.idx) || 0;
-          openLightbox(idx);
-        });
-        // also handle keyboard Enter or Space for accessibility
-        el.addEventListener('keydown', (ev) => {
-          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); el.click(); }
-        });
-      });
+    function moveCarousel(direction) {
+      currentIndex += direction;
+      if (currentIndex < 0) currentIndex = images.length - 1;
+      if (currentIndex >= images.length) currentIndex = 0;
+      updateCarousel();
+    }
 
-      /* ---------- Prevent image dragging (nicer UX) ---------- */
-      document.querySelectorAll('img').forEach(i => i.setAttribute('draggable', 'false'));
-
-      /* ---------- If user visits with #open=vertical or query param, open to first ---------- */
-      (function openFromHash(){
-        try {
-          const h = location.hash || '';
-          if (h.indexOf('open=vertical') !== -1) openLightbox(0);
-        } catch(e){}
-      })();
-
-      /* ---------- Simple preloader for quick switching ---------- */
-      verticalImages.forEach(it => {
-        const im = new Image();
-        im.src = it.src;
-      });
-    })();
+    updateCarousel();
   </script>
 </body>
 </html>
