@@ -103,15 +103,18 @@
   }
   .carousel img.active { opacity:1; z-index:1; transform:scale(1.02); }
   .info-box {
-    width:35%;
-    background:#fff;
-    border-radius:15px;
-    padding:1.5rem;
-    box-shadow:0 6px 20px rgba(0,0,0,0.08);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    height:510px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;   /* aligns text toward the top */
+    padding-top: 4rem;             /* moves text down a bit */
+    padding-left: 2rem;            /* moves text to the right */
+    padding-right: 1.5rem;         /* optional right padding */
+    width: 35%;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    height: 510px;
+    text-align: center;              /* ensures text is left-aligned within the shifted area */
   }
   .info-box h3 { margin-bottom:0.75rem; font-size:1.5rem; }
   .info-box p { margin:0; line-height:1.5; font-size:1rem; color:#555; }
@@ -320,7 +323,7 @@
   const infoBox=document.getElementById("infoBox");
   const infoData = [
   {title:"Tintagel Castle", description:"Tintagel, Cornwall<br><br><u>Canon R10</u><br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/1250<br>Aperture: f/7.1"},
-  {title:"Mazda RX-7", description:"Miyazaki City, Japan<br><br><u>Canon R10</u><br><br>Double Exposure:<br>Car:<br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/200<br>Aperture: f/6.3<br><br>Foliage:<br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/120<br>Aperture: f/6.3"},
+  {title:"Mazda RX-7", description:"Miyazaki City, Japan<br><br><u>Canon R10</u><br>Double Exposure:<br><br>Car:<br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/200<br>Aperture: f/6.3<br><br>Foliage:<br>Focal length: 18mm<br>ISO: 400<br>Exposure: 1/120<br>Aperture: f/6.3"},
   {title:"Heiwadai Park", description:"Miyazaki City, Japan<br><br><u>Canon R10</u><br>Focal length: 34mm<br>ISO: 100<br>Exposure: 1/200<br>Aperture: f/5.6"},
   {title:"Takachiho Gorge", description:"Miyazaki Prefecture, Japan<br><br><u>Canon R10</u><br>Focal length: 28mm<br>ISO: 800<br>Exposure: 1/160<br>Aperture: f/5.6"},
   {title:"Killer Hornet", description:"Macro Photography, Miyazaki City<br><br><u>Canon R10</u><br>Focal length: 200mm<br>ISO: 800<br>Exposure: 13 Seconds<br>Aperture: f/32"}
